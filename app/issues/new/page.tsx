@@ -1,10 +1,15 @@
-import { prisma } from '@/prisma/client'
-import IssueForm from '../_components/IssueForm'
-import { notFound } from 'next/navigation';
-import { Issue } from '@prisma/client';
+import dynamic from 'next/dynamic'
+import IssueFormSkeleton from './loading';
 
+const IssueForm = dynamic(
+  () => import('@/app/issues/_components/IssueForm'),
+  {
+    ssr: !!false,
+    loading: () => <IssueFormSkeleton />
+  }
+);
 
-const NewIssuePage = async ({ issue }: { issue: Issue }) => {
+const NewIssuePage = async () => {
 
   return (
     <IssueForm />
