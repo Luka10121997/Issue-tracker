@@ -67,15 +67,16 @@ const AuthStatus = () => {
         <DropdownMenu.Trigger>
           <Avatar className='cursor-pointer' src={session!.user!.image!} fallback="?" size="2" radius='full' referrerPolicy='no-referrer'></Avatar>
         </DropdownMenu.Trigger>
-        <DropdownMenu.Content></DropdownMenu.Content>
-        <DropdownMenu.Label>
-          <Text size="2">
-            {session!.user!.email}
-          </Text>
-        </DropdownMenu.Label>
-        <DropdownMenu.Item>
-          <Link href="/api/auth/signout">Log out</Link>
-        </DropdownMenu.Item>
+        <DropdownMenu.Content>
+          <DropdownMenu.Label>
+            <Text size="2">
+              {session!.user!.email}
+            </Text>
+          </DropdownMenu.Label>
+          <DropdownMenu.Item>
+            <Link href="/api/auth/signout">Log out</Link>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
       </DropdownMenu.Root>
 
     </Box >
