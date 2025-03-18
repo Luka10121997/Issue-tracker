@@ -1,10 +1,8 @@
 'use client';
 import { User } from '@prisma/client';
-import { Select, Skeleton } from '@radix-ui/themes'
+import { Select, Skeleton } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useEffect } from 'react'
-import { useState } from 'react'
 
 const AssigneeSelect = () => {
   const { data: users, error, isLoading } = useQuery<User[]>({
@@ -17,7 +15,6 @@ const AssigneeSelect = () => {
   if (isLoading) return <Skeleton />
 
   if (error) return null
-
 
   return (
     <Select.Root>
