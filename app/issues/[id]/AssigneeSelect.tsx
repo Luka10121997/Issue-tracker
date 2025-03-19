@@ -3,7 +3,7 @@ import { Issue, User } from '@prisma/client';
 import { Select, Skeleton } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast';
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const { data: users, error, isLoading } = useUsers()
@@ -13,7 +13,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   if (error) return null
 
   const assignIssue = (userId: string) =>
-    axios.patch('/sapi/issues/' + issue.id, { assignedToUserId: userId === "unassigned" ? null : userId })
+    axios.patch('/api/issues/' + issue.id, { assignedToUserId: userId === "unassigned" ? null : userId })
       .catch(() => { toast.error('This change could not be saved') })
 
   return (
