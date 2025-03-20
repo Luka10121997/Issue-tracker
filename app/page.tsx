@@ -1,6 +1,7 @@
+import LatestIssues from "./LatestIssues";
 
 export default function Home() {
   return (
-    <div>hello World</div>
+    <LatestIssues />
   )
 }
