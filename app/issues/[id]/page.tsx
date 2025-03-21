@@ -1,7 +1,7 @@
 import { prisma } from '@/prisma/client'
 import { Box, Flex, Grid } from '@radix-ui/themes';
 import { notFound } from 'next/navigation';
-import React from 'react'
+import React, { cache } from 'react'
 import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
 import DeleteIssueButton from './DeleteIssueButton';
@@ -12,13 +12,16 @@ import AssigneeSelect from './AssigneeSelect';
 interface Props {
   params: { id: string }
 }
+
+const fetchUser = cache((issueId: number) => prisma.issue.findUnique({ where: { id: issueId } }))
+
+
 const IssueDetailPage = async ({ params }: Props) => {
   const session = await getServerSession(authOptions)
-  const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(params.id) }
-  });
+  const issue = await fetchUser(parseInt(params.id))
 
   if (!issue) notFound()
+
   return (
     <Grid columns={{ initial: "1", sm: "5" }}>
       <Box className='md:col-span-4'>
@@ -35,6 +38,14 @@ const IssueDetailPage = async ({ params }: Props) => {
       )}
     </Grid >
   )
+}
+
+export async function generateMetadata({ params }: Props) {
+  const issue = await fetchUser(parseInt(params.id))
+  return {
+    title: issue?.title,
+    description: "Details of issue" + issue?.id
+  }
 }
 
 export default IssueDetailPage 
