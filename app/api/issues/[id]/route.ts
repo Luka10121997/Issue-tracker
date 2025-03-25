@@ -8,10 +8,10 @@ import { NextRequest, NextResponse } from "next/server";
 export async function PATCH(request: NextRequest,
   { params }: { params: { id: string } }) {
 
-  const session = await getServerSession(authOptions)
-
-  if (!session)
-    return NextResponse.json({}, { status: 401 })
+  //   const session = await getServerSession(authOptions)
+  // 
+  //   if (!session)
+  //     return NextResponse.json({}, { status: 401 })
 
   const body = await request.json()
   const validation = patchIsssueSchema.safeParse(body)
@@ -20,7 +20,7 @@ export async function PATCH(request: NextRequest,
     return NextResponse.json(validation.error.format(), { status: 400 })
 
   //Validate user
-  const { assignedToUserId, title, description } = body
+  const { assignedToUserId, title, description, comment } = body
 
   if (assignedToUserId) {
     const user = await prisma.user.findUnique({ where: { id: assignedToUserId } })
@@ -41,7 +41,8 @@ export async function PATCH(request: NextRequest,
     data: {
       title,
       description,
-      assignedToUserId
+      assignedToUserId,
+      comment
     }
   })
 

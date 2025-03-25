@@ -22,17 +22,13 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
       <Card className='prose max-w-full' mt='-4'>
         <ReactMarkdown>{issue.description}</ReactMarkdown>
       </Card>
-
+      {issue.comment && <Card>
+        {issue.comment}
+      </Card>}
     </>
   )
 }
 
-export async function generateMetadata({ params }: Props) {
-  const issue = await prisma.issue.findUnique({ where: { id: parseInt(params.id) } })
-  return {
-    title: issue?.title,
-    description: "Details of issue" + issue?.id
-  }
-}
+
 
 export default IssueDetails

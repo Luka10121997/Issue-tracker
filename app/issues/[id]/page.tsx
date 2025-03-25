@@ -8,6 +8,8 @@ import DeleteIssueButton from './DeleteIssueButton';
 import { getServerSession } from 'next-auth'
 import authOptions from '@/app/auth/authOptions';
 import AssigneeSelect from './AssigneeSelect';
+import AddComment from './AddComment';
+// import AddCommentButton from './AddCommentButton';
 
 interface Props {
   params: { id: string }
@@ -24,8 +26,9 @@ const IssueDetailPage = async ({ params }: Props) => {
 
   return (
     <Grid columns={{ initial: "1", sm: "5" }}>
-      <Box className='md:col-span-4'>
+      <Box className='md:col-span-4 space-y-3'>
         <IssueDetails issue={issue} />
+        <AddComment issue={issue} />
       </Box>
       {session && (
         <Box>
