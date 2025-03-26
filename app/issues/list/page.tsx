@@ -22,7 +22,8 @@ export const columns: {
   [
     { label: 'Issue', value: 'title' },
     { label: 'Status', value: 'status', className: 'hidden md:table-cell' },
-    { label: 'Created', value: 'createdAt', className: 'hidden md:table-cell' }
+    { label: 'Created', value: 'createdAt', className: 'hidden md:table-cell' },
+    { label: "Comments", value: 'comment', className: 'hidden md:table-cell' }
   ]
 
 const IssuesPage = async (props: Props) => {

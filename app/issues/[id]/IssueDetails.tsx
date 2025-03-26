@@ -22,7 +22,8 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
       <Card className='prose max-w-full' mt='-4'>
         <ReactMarkdown>{issue.description}</ReactMarkdown>
       </Card>
-      {issue.comment && <Card>
+      {issue.comment && <Heading>Added comment :</Heading>}
+      {issue.comment && <Card className='prose max-w-full'>
         {issue.comment}
       </Card>}
     </>

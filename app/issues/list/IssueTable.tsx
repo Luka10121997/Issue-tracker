@@ -43,6 +43,7 @@ const IssueTable = async ({ searchParams, issues }: Props) => {
               <IssueStatusBadge status={issue.status} />
             </Table.Cell>
             <Table.Cell className='hidden md:table-cell'>{issue.createdAt.toDateString()}</Table.Cell>
+            <Table.Cell className='hidden md:table-cell'>{issue.comment}</Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
