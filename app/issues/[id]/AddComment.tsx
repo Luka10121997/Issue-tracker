@@ -53,7 +53,6 @@ const AddComment = ({ issue }: { issue: Issue }) => {
             {isCommenting && <Spinner />}
           </Button>
         </Box>
-
       </form>
     </div>
   )
