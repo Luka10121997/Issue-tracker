@@ -35,15 +35,15 @@ const IssueTable = async ({ searchParams, issues }: Props) => {
               <Link href={`/issues/${issue.id}`}>
                 {issue.title}
               </Link>
-              <div className='block md:hidden'>
+              <div className='block md:hidden  myClass'>
                 <IssueStatusBadge status={issue.status} />
               </div>
             </Table.Cell>
             <Table.Cell className='hidden md:table-cell'>
               <IssueStatusBadge status={issue.status} />
             </Table.Cell>
-            <Table.Cell className='hidden md:table-cell'>{issue.createdAt.toDateString()}</Table.Cell>
-            <Table.Cell className='hidden md:table-cell'>{issue.comment}</Table.Cell>
+            <Table.Cell className='hidden md:table-cell myClass' >{issue.createdAt.toDateString()}</Table.Cell>
+            <Table.Cell className='hidden md:table-cell myClass'>{issue.comment}</Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
