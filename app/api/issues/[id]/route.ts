@@ -1,6 +1,7 @@
 import authOptions from "@/app/auth/authOptions";
 import { patchIsssueSchema } from "@/app/validationSchemas";
 import { prisma } from "@/prisma/client";
+import { Status } from "@prisma/client";
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,7 +24,10 @@ export async function PATCH(request: NextRequest,
   const { assignedToUserId, title, description, comment } = body
 
   if (assignedToUserId) {
-    const user = await prisma.user.findUnique({ where: { id: assignedToUserId } })
+    const user = await prisma.user.findUnique({
+      where: { id: assignedToUserId }
+    })
+
     if (!user)
       return NextResponse.json({ error: "Invalid user" }, { status: 400 })
   }
@@ -36,20 +40,36 @@ export async function PATCH(request: NextRequest,
   if (!issue)
     return NextResponse.json({ error: "Invalid issue" }, { status: 404 })
 
-  const updatedIssue = await prisma.issue.update({
-    where: { id: issue.id },
-    data: {
-      title,
-      description,
-      assignedToUserId,
-      comment
-    }
-  })
+  if (assignedToUserId != null) {
+    const updatedIssue = await prisma.issue.update({
+      where: { id: issue.id },
+      data: {
+        title,
+        description,
+        assignedToUserId,
+        comment,
+        status: Status.IN_PROGRESS
+      }
+    })
 
-  return NextResponse.json(updatedIssue)
+    return NextResponse.json(updatedIssue)
+  }
+
+  else {
+    const updatedIssue = await prisma.issue.update({
+      where: { id: issue.id },
+      data: {
+        title,
+        description,
+        assignedToUserId,
+        comment
+      }
+    })
+    return NextResponse.json(updatedIssue)
+  }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE({ params }: { params: { id: string } }) {
 
   const session = await getServerSession(authOptions)
 
@@ -70,3 +90,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   })
   return NextResponse.json({});
 }
+
+
+//TODO Refactor if() else for updating issue part

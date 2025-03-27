@@ -72,3 +72,5 @@ export const metadata: Metadata = {
 }
 
 export default IssuesPage
+
+//TODO Add feature to hide part of comment's value if it's larger than cell size
