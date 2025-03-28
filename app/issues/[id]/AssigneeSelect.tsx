@@ -3,6 +3,7 @@ import { Issue, User } from '@prisma/client';
 import { Select, Skeleton } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { getWaitUntilPromiseFromEvent } from 'next/dist/server/web/spec-extension/fetch-event';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -18,6 +19,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
     axios.patch('/api/issues/' + issue.id, { assignedToUserId: userId === "unassigned" ? null : userId })
       .catch(() => { toast.error('This change could not be saved') })
     router.refresh()
+
   }
 
   return (

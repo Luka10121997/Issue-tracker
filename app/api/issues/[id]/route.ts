@@ -1,7 +1,6 @@
 import { patchIsssueSchema } from "@/app/validationSchemas";
 import { prisma } from "@/prisma/client";
 import { Status } from "@prisma/client";
-import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -20,7 +19,7 @@ export async function PATCH(request: NextRequest,
     return NextResponse.json(validation.error.format(), { status: 400 })
 
   //Validate user
-  const { assignedToUserId, title, description, comment } = body
+  const { assignedToUserId, title, description, comment, status } = body
 
   if (assignedToUserId) {
     const user = await prisma.user.findUnique({
@@ -61,7 +60,8 @@ export async function PATCH(request: NextRequest,
         title,
         description,
         assignedToUserId,
-        comment
+        comment,
+        status
       }
     })
     return NextResponse.json(updatedIssue)
