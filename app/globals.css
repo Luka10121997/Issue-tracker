@@ -45,8 +45,8 @@ body {
   border-radius: 0px 0px 4px 4px;
   margin-left: 20px;
   max-width: max-content
-
 }
+
 
 @layer utilities {
   .nav-link {
