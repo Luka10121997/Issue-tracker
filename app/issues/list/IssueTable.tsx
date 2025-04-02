@@ -6,6 +6,7 @@ import React from 'react'
 import NextLink from 'next/link'
 import { Issue } from '@prisma/client'
 import { columns, SearchParams } from './page';
+import NoResults from '@/app/components/NoResultsMessage'
 
 interface Props {
   searchParams: SearchParams;
@@ -31,21 +32,28 @@ const IssueTable = async ({ searchParams, issues }: Props) => {
       <Table.Body>
         {issues.map(issue => (
           <Table.Row key={issue.id}>
-            <Table.Cell>
+            <Table.Cell className='myClass'>
               <Link href={`/issues/${issue.id}`}>
                 {issue.title}
               </Link>
-              <div className='block md:hidden'>
+              <div className='block md:hidden  myClass'>
                 <IssueStatusBadge status={issue.status} />
               </div>
             </Table.Cell>
             <Table.Cell className='hidden md:table-cell'>
               <IssueStatusBadge status={issue.status} />
             </Table.Cell>
-            <Table.Cell className='hidden md:table-cell'>{issue.createdAt.toDateString()}</Table.Cell>
-            <Table.Cell className='hidden md:table-cell'>{issue.comment}</Table.Cell>
+            <Table.Cell className='hidden md:table-cell myClass' >{issue.createdAt.toDateString()}</Table.Cell>
+            <Table.Cell className='hidden md:table-cell myClass'>{issue.comment}</Table.Cell>
           </Table.Row>
         ))}
+        {issues.length === 0 && (<Table.Row>
+          <Table.Cell>
+            <NoResults>
+              No issues found !
+            </NoResults>
+          </Table.Cell>
+        </Table.Row>)}
       </Table.Body>
     </Table.Root>
   )
