@@ -6,6 +6,7 @@ import React from 'react'
 import NextLink from 'next/link'
 import { Issue } from '@prisma/client'
 import { columns, SearchParams } from './page';
+import NoResults from '@/app/components/NoResultsMessage'
 
 interface Props {
   searchParams: SearchParams;
@@ -46,6 +47,13 @@ const IssueTable = async ({ searchParams, issues }: Props) => {
             <Table.Cell className='hidden md:table-cell myClass'>{issue.comment}</Table.Cell>
           </Table.Row>
         ))}
+        {issues.length === 0 && (<Table.Row>
+          <Table.Cell>
+            <NoResults>
+              No issues found !
+            </NoResults>
+          </Table.Cell>
+        </Table.Row>)}
       </Table.Body>
     </Table.Root>
   )
