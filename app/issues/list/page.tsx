@@ -1,12 +1,12 @@
 import React from 'react'
 import { prisma, } from '@/prisma/client'
 import IssueActions from './IssueActions'
-import { Issue, Status, User } from '@prisma/client'
+import { Issue, Status } from '@prisma/client'
 import Pagination from '@/app/components/Pagination'
 import IssueTable from './IssueTable'
 import { Metadata } from 'next'
 
-export type SearchParams = Promise<{ status: Status, orderBy: keyof Issue, page: string, user: string, sort: 'asc' | 'desc' }>;
+export type SearchParams = Promise<{ status: Status, orderBy: keyof Issue, page: string, user: string, sort: 'asc' | 'desc', size: string }>;
 
 interface Props {
   searchParams: SearchParams;
@@ -37,7 +37,6 @@ const IssuesPage = async (props: Props) => {
   const user = await prisma.user.findUnique(
     {
       where: { id: searchParams.user || '' }
-
     }
   )
 
@@ -53,7 +52,7 @@ const IssuesPage = async (props: Props) => {
 
 
   const page = parseInt(searchParams.page) || 1
-  const pageSize = 10
+  const pageSize = parseInt(searchParams.size) || 5
 
 
   const issues = await prisma.issue.findMany({

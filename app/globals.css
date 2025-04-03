@@ -47,6 +47,17 @@ body {
   max-width: max-content
 }
 
+.pageSizeDropdown {
+  position: auto;
+  flex-direction: column;
+  display: none;
+  background-color: rgba(255, 238, 238, 0.89);
+  backdrop-filter: blur(5px);
+  border-radius: 0px 0px 4px 4px;
+  margin-left: 20px;
+  max-width: max-content
+}
+
 
 @layer utilities {
   .nav-link {
