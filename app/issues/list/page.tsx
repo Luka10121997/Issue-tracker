@@ -6,7 +6,7 @@ import Pagination from '@/app/components/Pagination'
 import IssueTable from './IssueTable'
 import { Metadata } from 'next'
 
-export type SearchParams = Promise<{ status: Status, orderBy: keyof Issue, page: string, user: string }>;
+export type SearchParams = Promise<{ status: Status, orderBy: keyof Issue, page: string, user: string, sort: 'asc' | 'desc' }>;
 
 interface Props {
   searchParams: SearchParams;
@@ -49,7 +49,8 @@ const IssuesPage = async (props: Props) => {
 
   const orderBy = columns.map(column => column.value)
     .includes(searchParams.orderBy)
-    ? { [searchParams.orderBy]: 'asc' } : undefined
+    ? { [searchParams.orderBy]: searchParams.sort } : undefined
+
 
   const page = parseInt(searchParams.page) || 1
   const pageSize = 10

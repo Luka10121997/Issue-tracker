@@ -1,5 +1,5 @@
 import IssueStatusBadge from '@/app/components/IssueStatusBadge'
-import { ArrowUpIcon } from '@radix-ui/react-icons'
+import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons'
 import { Table } from '@radix-ui/themes'
 import Link from 'next/link'
 import React from 'react'
@@ -21,11 +21,15 @@ const IssueTable = async ({ searchParams, issues }: Props) => {
         <Table.Row>
           {columns.map(async column => <Table.ColumnHeaderCell key={column.value} className={column.className}>
             <NextLink href={{
-              query: { ...await searchParams, orderBy: column.value }
+              query: {
+                ...await searchParams, orderBy: column.value,
+                sort: column.value === (await searchParams).orderBy ?
+                  (await searchParams).sort === 'asc' ? 'desc' : 'asc' : 'asc'
+              }
             }}>
               {column.label}
             </NextLink>
-            {column.value === orderBy && <ArrowUpIcon className='inline' />}
+            {column.value === orderBy && ((await searchParams).sort === 'asc' ? <ArrowUpIcon className='inline' /> : <ArrowDownIcon className="inline" />)}
           </Table.ColumnHeaderCell>)}
         </Table.Row>
       </Table.Header>
