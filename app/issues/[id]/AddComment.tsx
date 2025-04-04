@@ -3,9 +3,8 @@ import ErrorMessage from '@/app/components/ErrorMessage';
 import Spinner from '@/app/components/Spinner';
 import { patchIsssueSchema } from '@/app/validationSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Issue, User } from '@prisma/client';
+import { Issue } from '@prisma/client';
 import { Box, Button, Callout, TextArea } from '@radix-ui/themes';
-import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -60,3 +59,5 @@ const AddComment = ({ issue }: { issue: Issue }) => {
 }
 
 export default AddComment
+
+//TODO Add delete comment button and functionality

@@ -7,6 +7,8 @@ import { Container, Theme } from "@radix-ui/themes";
 import './theme-config.css';
 import Authprovider from './auth/provider';
 import QueryClientProvider from './QueryClientProvider';
+import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -33,6 +35,7 @@ export default function RootLayout({
               <main className='p-4'>
                 <Container>
                   {children}
+                  <Toaster />
                 </Container>
               </main>
             </Theme>

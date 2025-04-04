@@ -9,11 +9,13 @@ import "easymde/dist/easymde.min.css";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
+import toast, { Toaster, } from 'react-hot-toast';
 import SimpleMDE from 'react-simplemde-editor';
 import { z } from 'zod';
 
 
 type IssueFormData = z.infer<typeof isssueSchema>
+
 
 const IssueForm = ({ issue }: { issue?: Issue }) => {
   const router = useRouter();
@@ -23,15 +25,35 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   const [error, setError] = useState('');
   const [isSubmitting, setSubmitting] = useState(false);
 
+  const showSuccessToastMessage = () => {
+    if (!issue) {
+      toast.success("Issue is successfully created", {
+        position: 'bottom-right',
+        className: 'toastify__toast-container',
+        duration: 3000
+      });
+    }
+    else {
+      toast.success("Issue is successfully updated", {
+        position: 'bottom-right',
+        className: 'toastify__toast-container',
+        duration: 3000
+      });
+    }
+  };
+
   const onSubmit = handleSubmit(async (data) => {
     try {
       setSubmitting(true)
+
       if (issue)
         await axios.patch('/api/issues/' + issue.id, data)
       else
         await axios.post('/api/issues', data);
+
       router.push('/issues/list');
       router.refresh();
+
     } catch (error) {
       setSubmitting(false)
       setError('An unexpected error occurs')
@@ -60,7 +82,8 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         <ErrorMessage>
           {errors.description?.message}
         </ErrorMessage>
-        <Button disabled={isSubmitting}>  {issue ? 'Update issue' : 'Submit New Issue'}{''}{isSubmitting && <Spinner />}</Button>
+        <Button disabled={isSubmitting} onClick={showSuccessToastMessage}>  {issue ? 'Update issue' : 'Submit New Issue'}{''}{isSubmitting && <Spinner />}</Button>
+        <Toaster />
       </form>
     </div >
   );
