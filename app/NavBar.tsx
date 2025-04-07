@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useSession } from "next-auth/react"
 import { Avatar, Box, Container, DropdownMenu, Flex, Text } from '@radix-ui/themes';
 import { Skeleton } from '@radix-ui/themes';
+import BackIcon from './components/BackIcon';
 
 const NavBar = () => {
 
@@ -15,6 +16,7 @@ const NavBar = () => {
       <Container>
         <Flex justify="between">
           <Flex align="center" gap="3">
+            <BackIcon />
             <Link href='/'>
               <BiSolidBug />
             </Link>

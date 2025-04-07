@@ -3,18 +3,23 @@ import { Issue, User } from '@prisma/client';
 import { Select, Skeleton } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const { data: users, error, isLoading } = useUsers()
+  const router = useRouter()
 
   if (isLoading) return <Skeleton />
 
   if (error) return null
 
-  const assignIssue = (userId: string) =>
+  const assignIssue = (userId: string) => {
     axios.patch('/api/issues/' + issue.id, { assignedToUserId: userId === "unassigned" ? null : userId })
       .catch(() => { toast.error('This change could not be saved') })
+    router.refresh()
+
+  }
 
   return (
     <>

@@ -59,3 +59,5 @@ const AddComment = ({ issue }: { issue: Issue }) => {
 }
 
 export default AddComment
+
+//TODO Add delete comment button and functionality

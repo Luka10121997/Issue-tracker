@@ -20,6 +20,59 @@ body {
  
 }
 
+.myClass {
+   overflow: hidden;
+   white-space: nowrap;
+}
+
+.dropDown {
+  position: fixed;
+  top: 15%;
+  flex-direction: column;
+  display: none;
+  background-color: rgba(255, 238, 238, 0.89);
+  backdrop-filter: blur(5px);
+  border-radius: 0px 0px 4px 4px;
+}
+
+.listDropDown {
+  position: fixed;
+  top: 10%;
+  flex-direction: column;
+  display: none;
+  background-color: rgba(255, 238, 238, 0.89);
+  backdrop-filter: blur(5px);
+  border-radius: 0px 0px 4px 4px;
+  margin-left: 20px;
+  max-width: max-content
+}
+
+.pageSizeDropdown {
+  position: auto;
+  flex-direction: column;
+  display: none;
+  background-color: rgba(255, 238, 238, 0.89);
+  backdrop-filter: blur(5px);
+  border-radius: 0px 0px 4px 4px;
+  margin-left: 20px;
+  max-width: max-content
+}
+
+.toastify__toast-container {
+  min-width: 250px; /* Set a default minimum width */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+  min-height: 60px;
+
+
+}
+
 @layer utilities {
   .nav-link {
     @apply text-zinc-500 hover:text-zinc-800 transition-colors
