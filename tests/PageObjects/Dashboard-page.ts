@@ -23,7 +23,7 @@ export default class DashboardPage {
     await expect(issuesTable).toHaveCount(latestIssuesCount)
   }
 
-  public async assertIssuesGraphIsVisible(issueCount: number, status: string) {
+  public async assertIssuesGraphIsVisible(issueCount: number, status: string): Promise<void> {
     const graph = this.page.locator('.recharts-wrapper')
     const yMaxValue = issueCount + 1
     const yAxisMaxValue = graph.locator('.recharts-yAxis.yAxis').locator('text').filter({ hasText: yMaxValue.toString() })

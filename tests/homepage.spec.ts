@@ -16,7 +16,6 @@ test.beforeAll(async () => {
   page = pageContext.page
 })
 
-
 test.beforeEach(async () => {
   navBar = new NavigationBar(page)
   dashboard = new DashboardPage(page)
@@ -62,4 +61,24 @@ test("Check dashboard cards visibility and issue counts per status", async () =>
   await dashboard.assertIssuesGraphIsVisible(open, "Open")
   await dashboard.assertIssuesGraphIsVisible(open, "In Progress")
   await dashboard.assertIssuesGraphIsVisible(open, "Closed")
+})
+
+test("Check is rendering with nav links works", async () => {
+
+  //Click on "Issues" nav link and check is current url correct
+  await navBar.clickOnLink("Issues")
+  await expect(page).toHaveURL(/issues\/list/)
+  await page.waitForTimeout(500)
+
+  //Go back on Home page by click on "Dashboard" link and check is current url correct
+  await navBar.clickOnLink("Dashboard")
+  await expect(page).toHaveURL("http://localhost:3000/")
+  await page.waitForTimeout(500)
+
+  //Click again on Issues link and then go back on Dashboard page by click on the left arrow button
+  await navBar.clickOnLink("Issues")
+  await navBar.clickOnBackButton()
+
+  //Confirm that "http://localhost:3000/" is url when user goes back with arrow left back button
+  await expect(page).toHaveURL("http://localhost:3000/")
 })
