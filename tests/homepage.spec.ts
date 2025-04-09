@@ -1,5 +1,5 @@
 import test, { expect, Page } from "@playwright/test";
-import PageContext from "./context";
+import PageContext from "../../issues-tracker-app/tests/Context/context"
 import NavigationBar from "./PageObjects/NavigationBar";
 import DashboardPage from "./PageObjects/Dashboard-page";
 import { prisma } from "@/prisma/client";
