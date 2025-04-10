@@ -3,7 +3,7 @@ import PageContext from "./Context/context";
 import NavigationBar from "./PageObjects/NavigationBar";
 import DashboardPage from "./PageObjects/Dashboard-page";
 import IssuesPage from "./PageObjects/Issues-page";
-import { useSearchParams } from "next/navigation";
+import { prisma } from "@/prisma/client";
 
 let page: Page
 let pageContext: PageContext
@@ -72,7 +72,6 @@ test("Test pagination of Issues table", async () => {
   await issuesPage.assertArrowIsDisabled(3)
   await page.waitForTimeout(500)
 
-
   //Confirm that page range is correct when user swith pages
   await issuesPage.assertPagesRange()
   await page.waitForTimeout(500)
@@ -93,5 +92,51 @@ test("Test pagination of Issues table", async () => {
   await issuesPage.assertPagesRange()
   await issuesPage.assertArrowIsDisabled(0)
   await issuesPage.assertArrowIsDisabled(1)
+  await page.waitForTimeout(500)
+})
+
+test("Test status dropdown with all 3 possible status values", async () => {
+
+  //get issues counts by their statuses
+  const open_count = await prisma.issue.count({ where: { status: 'OPEN' }, take: 10 })
+  const inProgress_count = await prisma.issue.count({ where: { status: 'IN_PROGRESS' }, take: 10 })
+  const closed_count = await prisma.issue.count({ where: { status: 'CLOSED' }, take: 10 })
+
+  //Click on Status dropdown
+  await issuesPage.clickOnDropdown('Filter by status...')
+  await page.waitForTimeout(500)
+
+  //Select "open" status
+  await issuesPage.selectDropdownOption('Open')
+  await page.waitForTimeout(500)
+
+  //Assert that rows have selected "Open" status
+  await issuesPage.assertFilteredIssuesByStatus(open_count, 'Open')
+  await page.waitForTimeout(3000)
+
+  //Select "Closed" status
+  await issuesPage.clickOnDropdown('Open')
+  await page.waitForTimeout(500)
+  await issuesPage.selectDropdownOption('Closed')
+  await page.waitForTimeout(500)
+
+  //Assert that rows have selected "Closed" status
+  await issuesPage.assertFilteredIssuesByStatus(closed_count, 'Closed')
+  await page.waitForTimeout(2000)
+
+  //Select "In Progress" status
+  await issuesPage.clickOnDropdown('Closed')
+  await page.waitForTimeout(500)
+  await issuesPage.selectDropdownOption('In Progress')
+  await page.waitForTimeout(500)
+
+  //Assert that rows have selected "Closed" status
+  await issuesPage.assertFilteredIssuesByStatus(inProgress_count, 'In Progress')
+  await page.waitForTimeout(2000)
+
+  //Select "All" from dropdown list
+  await issuesPage.clickOnDropdown('In Progress')
+  await page.waitForTimeout(500)
+  await issuesPage.selectDropdownOption('All')
   await page.waitForTimeout(500)
 })

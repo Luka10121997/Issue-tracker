@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { pages } from "next/dist/build/templates/app-page";
 
 export default class IssuesPage {
   private page: Page
@@ -8,6 +7,7 @@ export default class IssuesPage {
   private tableBody: Locator
   private tableRows: Locator
   private paginationWrapper: Locator
+  private selectDropdownsWrapper: Locator
 
   constructor(_page: Page) {
     this.page = _page
@@ -16,6 +16,7 @@ export default class IssuesPage {
     this.tableBody = this.tableRoot.locator('tbody.rt-TableBody')
     this.tableRows = this.tableBody.locator('tr.rt-TableRow')
     this.paginationWrapper = this.page.locator('.rt-Flex.rt-r-ai-center.rt-r-gap-2')
+    this.selectDropdownsWrapper = this.wrapper.locator('.rt-Box.space-x-2')
   }
 
   public async assertIssuesTableHeaderElements(headerName: string) {
@@ -47,6 +48,21 @@ export default class IssuesPage {
     const currentPageSize = pagesRange.substring(4, 7)
     const lastPage = pagesRange.substring(10, 11)
     expect(pagesRange).toContain(`Page${currentPageSize}of ${lastPage}`)
+  }
 
+  public async clickOnDropdown(placeholderText: string) {
+    await this.selectDropdownsWrapper.locator('button > span', { hasText: placeholderText }).click()
+  }
+
+  public async selectDropdownOption(status: string) {
+    const option = this.page.getByRole('option').filter({ hasText: status })
+    await option.click()
+  }
+
+  public async assertFilteredIssuesByStatus(issuesCount: number, status: string) {
+    for (let i = 0; i < issuesCount; i++) {
+      const issuesRowsFilteredByStatus = this.tableRows.nth(i).locator('td > span').filter({ hasText: status })
+      await expect(issuesRowsFilteredByStatus).toHaveText(status)
+    }
   }
 }
