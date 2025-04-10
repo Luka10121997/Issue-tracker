@@ -59,10 +59,19 @@ export default class IssuesPage {
     await option.click()
   }
 
-  public async assertFilteredIssuesByStatus(issuesCount: number, status: string) {
-    for (let i = 0; i < issuesCount; i++) {
-      const issuesRowsFilteredByStatus = this.tableRows.nth(i).locator('td > span').filter({ hasText: status })
-      await expect(issuesRowsFilteredByStatus).toHaveText(status)
+  public async assertFilteredIssuesBySelectedValue(issuesCount: number, status?: string) {
+    if (status != undefined) {
+      for (let i = 0; i < issuesCount; i++) {
+        const issuesRowsFilteredBySelectedValue = this.tableRows.nth(i).locator('td > span').filter({ hasText: status })
+        await expect(issuesRowsFilteredBySelectedValue).toHaveText(status)
+        await expect(this.tableRows).toHaveCount(issuesCount)
+      }
     }
+    await expect(this.tableRows).toHaveCount(issuesCount)
+  }
+
+  public async confirmDropdownSelectedValue(selectedValue: string) {
+    const dropdownSelectedValue = this.selectDropdownsWrapper.locator('button > span', { hasText: selectedValue })
+    await expect(dropdownSelectedValue).toHaveText(selectedValue)
   }
 }

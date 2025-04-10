@@ -1,15 +1,11 @@
 import test, { expect, Page } from "@playwright/test";
 import PageContext from "./Context/context";
-import NavigationBar from "./PageObjects/NavigationBar";
-import DashboardPage from "./PageObjects/Dashboard-page";
 import IssuesPage from "./PageObjects/Issues-page";
 import { prisma } from "@/prisma/client";
 
 let page: Page
 let pageContext: PageContext
 const pageUrl = "http://localhost:3000/issues/list"
-let navBar: NavigationBar
-let dashboard: DashboardPage
 let issuesPage: IssuesPage
 
 test.beforeAll(async () => {
@@ -19,8 +15,6 @@ test.beforeAll(async () => {
 })
 
 test.beforeEach(async () => {
-  navBar = new NavigationBar(page)
-  dashboard = new DashboardPage(page)
   issuesPage = new IssuesPage(page)
   await page.goto(pageUrl)
   expect(page).toHaveURL(/issues\/list/)
@@ -111,7 +105,7 @@ test("Test status dropdown with all 3 possible status values", async () => {
   await page.waitForTimeout(500)
 
   //Assert that rows have selected "Open" status
-  await issuesPage.assertFilteredIssuesByStatus(open_count, 'Open')
+  await issuesPage.assertFilteredIssuesBySelectedValue(open_count, 'Open')
   await page.waitForTimeout(3000)
 
   //Select "Closed" status
@@ -121,7 +115,7 @@ test("Test status dropdown with all 3 possible status values", async () => {
   await page.waitForTimeout(500)
 
   //Assert that rows have selected "Closed" status
-  await issuesPage.assertFilteredIssuesByStatus(closed_count, 'Closed')
+  await issuesPage.assertFilteredIssuesBySelectedValue(closed_count, 'Closed')
   await page.waitForTimeout(2000)
 
   //Select "In Progress" status
@@ -131,12 +125,113 @@ test("Test status dropdown with all 3 possible status values", async () => {
   await page.waitForTimeout(500)
 
   //Assert that rows have selected "Closed" status
-  await issuesPage.assertFilteredIssuesByStatus(inProgress_count, 'In Progress')
+  await issuesPage.assertFilteredIssuesBySelectedValue(inProgress_count, 'In Progress')
   await page.waitForTimeout(2000)
 
   //Select "All" from dropdown list
   await issuesPage.clickOnDropdown('In Progress')
   await page.waitForTimeout(500)
   await issuesPage.selectDropdownOption('All')
+  await page.waitForTimeout(500)
+})
+
+test("Test assignee users dropdown with user and without any assigned user", async () => {
+
+  //Get users from db
+  const users = await prisma.user.findMany({ orderBy: { name: 'asc' } })
+  const username = users[0].name
+
+  const issuesCount = await prisma.issue.count({ where: { assignedToUserId: users[0].id }, take: 10 })
+
+  //Click on Assignee user dropdown
+  await issuesPage.clickOnDropdown('Filter by assigned user...')
+  await page.waitForTimeout(1000)
+
+  //Select user
+  await issuesPage.selectDropdownOption(username!)
+  await issuesPage.confirmDropdownSelectedValue(username!)
+  await page.waitForTimeout(1000)
+
+  //Confirm that there is correct number of displayed filtered issues
+  await issuesPage.assertFilteredIssuesBySelectedValue(issuesCount)
+  await page.waitForTimeout(1000)
+
+  //Select unassigned value
+  await issuesPage.clickOnDropdown(username!)
+  await issuesPage.selectDropdownOption("Unassigned")
+  await issuesPage.confirmDropdownSelectedValue("Unassigned")
+  await page.waitForTimeout(1000)
+})
+
+test("Test combination of assigned user and assigned issue status", async () => {
+
+  //Get users from db
+  const users = await prisma.user.findMany({ orderBy: { name: 'asc' } })
+  const username = users[0].name
+
+  //Get issuesCount for different cases
+  const issuesCountClosedWithUser = await prisma.issue.count({ where: { assignedToUserId: users[0].id, status: 'CLOSED' }, take: 10 })
+  const issuesCountInProgressWithUser = await prisma.issue.count({ where: { assignedToUserId: users[0].id, status: 'IN_PROGRESS' }, take: 10 })
+  const issuesCountInProgressWithoutUser = await prisma.issue.count({ where: { status: 'IN_PROGRESS' }, take: 10 })
+  const issuesCountClosedWithoutUser = await prisma.issue.count({ where: { status: 'CLOSED' }, take: 10 })
+  const issuesCountAllWithoutUser = await prisma.issue.count({ take: 10 })
+  const issuesCountAllWithUser = await prisma.issue.count({ where: { assignedToUserId: users[0].id }, take: 10 })
+
+  //Click on Assignee user dropdown
+  await issuesPage.clickOnDropdown('Filter by assigned user...')
+  await page.waitForTimeout(1000)
+
+  //Select user
+  await issuesPage.selectDropdownOption(username!)
+  await issuesPage.confirmDropdownSelectedValue(username!)
+  await issuesPage.confirmDropdownSelectedValue(username!)
+  await page.waitForTimeout(500)
+
+  //Click on Status dropdown and select "Closed" status
+  await issuesPage.clickOnDropdown('Filter by status...')
+  await issuesPage.selectDropdownOption('Closed')
+  await issuesPage.confirmDropdownSelectedValue('Closed')
+  await issuesPage.confirmDropdownSelectedValue(username!)
+  await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountClosedWithUser, 'Closed')
+  await page.waitForTimeout(500)
+
+  //Click on Status dropdown and select "In Progress" status
+  await issuesPage.clickOnDropdown('Closed')
+  await issuesPage.selectDropdownOption("In Progress")
+  await issuesPage.confirmDropdownSelectedValue('In Progress')
+  await issuesPage.confirmDropdownSelectedValue(username!)
+  await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountInProgressWithUser, 'In Progress')
+  await page.waitForTimeout(500)
+
+  //Click on Users dropdown and select "Unassigned"
+  await issuesPage.clickOnDropdown(username!)
+  await issuesPage.selectDropdownOption("Unassigned")
+  await issuesPage.confirmDropdownSelectedValue('Unassigned')
+  await issuesPage.confirmDropdownSelectedValue('In Progress')
+  await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountInProgressWithoutUser, 'In Progress')
+  await page.waitForTimeout(500)
+
+  //Click on Status dropdown and select "Closed"
+  await issuesPage.clickOnDropdown("In Progress")
+  await issuesPage.selectDropdownOption('Closed')
+  await issuesPage.confirmDropdownSelectedValue("Closed")
+  await issuesPage.confirmDropdownSelectedValue('Unassigned')
+  await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountClosedWithoutUser, "Closed")
+  await page.waitForTimeout(500)
+
+  //Click on Status dropdown and select "All" statuses
+  await issuesPage.clickOnDropdown("Closed")
+  await issuesPage.selectDropdownOption('All')
+  await issuesPage.confirmDropdownSelectedValue("All")
+  await issuesPage.confirmDropdownSelectedValue('Unassigned')
+  await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountAllWithoutUser)
+  await page.waitForTimeout(500)
+
+  //Click on User dropdown and select user
+  await issuesPage.clickOnDropdown("Unassigned")
+  await issuesPage.selectDropdownOption(username!)
+  await issuesPage.confirmDropdownSelectedValue(username!)
+  await issuesPage.confirmDropdownSelectedValue('All')
+  await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountAllWithUser)
   await page.waitForTimeout(500)
 })
