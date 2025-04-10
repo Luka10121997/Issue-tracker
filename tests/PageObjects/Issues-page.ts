@@ -8,6 +8,8 @@ export default class IssuesPage {
   private tableRows: Locator
   private paginationWrapper: Locator
   private selectDropdownsWrapper: Locator
+  private pageSizeContentMenuWrapper: Locator
+  private selectedOptionCheckMark: Locator
 
   constructor(_page: Page) {
     this.page = _page
@@ -17,6 +19,8 @@ export default class IssuesPage {
     this.tableRows = this.tableBody.locator('tr.rt-TableRow')
     this.paginationWrapper = this.page.locator('.rt-Flex.rt-r-ai-center.rt-r-gap-2')
     this.selectDropdownsWrapper = this.wrapper.locator('.rt-Box.space-x-2')
+    this.pageSizeContentMenuWrapper = this.page.locator('.rt-SelectGroup')
+    this.selectedOptionCheckMark = this.page.locator('span.rt-SelectItemIndicator')
   }
 
   public async assertIssuesTableHeaderElements(headerName: string) {
@@ -74,4 +78,28 @@ export default class IssuesPage {
     const dropdownSelectedValue = this.selectDropdownsWrapper.locator('button > span', { hasText: selectedValue })
     await expect(dropdownSelectedValue).toHaveText(selectedValue)
   }
+
+  public async getPageSizeDropdowmn(placeholderText: string): Promise<Locator> {
+    return this.paginationWrapper.locator('button > span', { hasText: placeholderText })
+  }
+
+  public async clickPageSizeDropdown(placeholderText: string) {
+    const dropdown = this.getPageSizeDropdowmn(placeholderText)
+    await (await dropdown).click()
+  }
+
+  public async selectPageSizeOption(option: string) {
+    const suggestions = this.pageSizeContentMenuWrapper.locator('.rt-SelectLabel')
+    await expect(suggestions).toHaveText("Suggestions")
+    const dropdownContent = this.pageSizeContentMenuWrapper.getByRole('option', { name: option, exact: true }).filter({ hasText: option })
+    await dropdownContent.click()
+    expect(await this.getPageSizeDropdowmn(option)).toHaveText(option)
+  }
+
+  public async assertCheckMarkIsVisible() {
+    await expect(this.selectedOptionCheckMark).toBeVisible()
+    await expect(this.selectedOptionCheckMark).toHaveCSS('border-bottom-color', 'rgb(229, 231, 235)')
+  }
 }
+
+

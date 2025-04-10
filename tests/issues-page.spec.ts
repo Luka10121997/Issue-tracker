@@ -2,6 +2,7 @@ import test, { expect, Page } from "@playwright/test";
 import PageContext from "./Context/context";
 import IssuesPage from "./PageObjects/Issues-page";
 import { prisma } from "@/prisma/client";
+import { PageSize } from "./enums";
 
 let page: Page
 let pageContext: PageContext
@@ -197,6 +198,7 @@ test("Test combination of assigned user and assigned issue status", async () => 
 
   //Click on Status dropdown and select "In Progress" status
   await issuesPage.clickOnDropdown('Closed')
+  await issuesPage.assertCheckMarkIsVisible()
   await issuesPage.selectDropdownOption("In Progress")
   await issuesPage.confirmDropdownSelectedValue('In Progress')
   await issuesPage.confirmDropdownSelectedValue(username!)
@@ -205,6 +207,7 @@ test("Test combination of assigned user and assigned issue status", async () => 
 
   //Click on Users dropdown and select "Unassigned"
   await issuesPage.clickOnDropdown(username!)
+  await issuesPage.assertCheckMarkIsVisible()
   await issuesPage.selectDropdownOption("Unassigned")
   await issuesPage.confirmDropdownSelectedValue('Unassigned')
   await issuesPage.confirmDropdownSelectedValue('In Progress')
@@ -213,6 +216,7 @@ test("Test combination of assigned user and assigned issue status", async () => 
 
   //Click on Status dropdown and select "Closed"
   await issuesPage.clickOnDropdown("In Progress")
+  await issuesPage.assertCheckMarkIsVisible()
   await issuesPage.selectDropdownOption('Closed')
   await issuesPage.confirmDropdownSelectedValue("Closed")
   await issuesPage.confirmDropdownSelectedValue('Unassigned')
@@ -221,6 +225,7 @@ test("Test combination of assigned user and assigned issue status", async () => 
 
   //Click on Status dropdown and select "All" statuses
   await issuesPage.clickOnDropdown("Closed")
+  await issuesPage.assertCheckMarkIsVisible()
   await issuesPage.selectDropdownOption('All')
   await issuesPage.confirmDropdownSelectedValue("All")
   await issuesPage.confirmDropdownSelectedValue('Unassigned')
@@ -229,9 +234,48 @@ test("Test combination of assigned user and assigned issue status", async () => 
 
   //Click on User dropdown and select user
   await issuesPage.clickOnDropdown("Unassigned")
+  await issuesPage.assertCheckMarkIsVisible()
   await issuesPage.selectDropdownOption(username!)
   await issuesPage.confirmDropdownSelectedValue(username!)
   await issuesPage.confirmDropdownSelectedValue('All')
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountAllWithUser)
+  await page.waitForTimeout(500)
+})
+
+test("Test 'Select page size' dropdown", async () => {
+
+  //Select page size '5
+  await issuesPage.clickPageSizeDropdown('Select page size...')
+  await page.waitForTimeout(500)
+  await issuesPage.selectPageSizeOption(PageSize.five)
+  await page.waitForTimeout(1000)
+
+  //Assert page range after it's selected page size = 5 and assert that 5 issues are displayed
+  await issuesPage.assertPagesRange()
+  await issuesPage.assertFilteredIssuesBySelectedValue(5)
+  await page.waitForTimeout(500)
+
+  //Select page size '10'
+  await issuesPage.clickPageSizeDropdown(PageSize.five)
+  await issuesPage.assertCheckMarkIsVisible()
+  await page.waitForTimeout(500)
+  await issuesPage.selectPageSizeOption(PageSize.ten)
+  await page.waitForTimeout(1000)
+
+  //Assert page range after it's selected page size = 10 and assert that 10 issues are displayed
+  await issuesPage.assertPagesRange()
+  await issuesPage.assertFilteredIssuesBySelectedValue(10)
+  await page.waitForTimeout(500)
+
+  //Select page size '1'
+  await issuesPage.clickPageSizeDropdown(PageSize.ten)
+  await issuesPage.assertCheckMarkIsVisible()
+  await page.waitForTimeout(500)
+  await issuesPage.selectPageSizeOption(PageSize.one)
+  await page.waitForTimeout(1000)
+
+  //Assert page range after it's selected page size = 1 and assert that 1 issue is displayed
+  await issuesPage.assertPagesRange()
+  await issuesPage.assertFilteredIssuesBySelectedValue(1)
   await page.waitForTimeout(500)
 })
