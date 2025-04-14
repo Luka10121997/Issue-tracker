@@ -100,6 +100,20 @@ export default class IssuesPage {
     await expect(this.selectedOptionCheckMark).toBeVisible()
     await expect(this.selectedOptionCheckMark).toHaveCSS('border-bottom-color', 'rgb(229, 231, 235)')
   }
+
+  public async clickOnCreateNewIssueButton(buttonName: string) {
+    const button = this.wrapper.getByRole('button').filter({ hasText: buttonName })
+    await expect(button).toBeVisible()
+    await expect(button).toHaveText(buttonName)
+    await button.click()
+  }
+
+  public async assertLastCreatedIssueOnIssuesPage(title: string) {
+    const titleData = this.tableRows.last().locator('td.rt-TableCell.myClass > a').filter({ hasText: title })
+    const statusData = this.tableRows.last().locator('td.rt-TableCell > span').filter({ hasText: "Open" })
+    await expect(titleData).toHaveText(title)
+    await expect(statusData).toHaveText('Open')
+  }
 }
 
 
