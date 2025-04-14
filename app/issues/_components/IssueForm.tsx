@@ -45,6 +45,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       setSubmitting(true)
+      showSuccessToastMessage()
 
       if (issue)
         await axios.patch('/api/issues/' + issue.id, data)
@@ -69,20 +70,22 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         onSubmit={onSubmit}>
         <Box maxWidth="200px">
           <TextField.Root size="1" defaultValue={issue?.title} placeholder="Title" {...register('title')} />
+          <ErrorMessage>
+            {errors.title?.message}
+          </ErrorMessage>
         </Box>
-        <ErrorMessage>
-          {errors.title?.message}
-        </ErrorMessage>
         <Controller
           name='description'
           control={control}
-          defaultValue={issue?.description}
-          render={({ field }) => <SimpleMDE placeholder="Description" {...field} />}
+          defaultValue={issue ? issue.description : ''}
+          render={({ field }) => <SimpleMDE placeholder="Description" {...field} />
+          }
         />
         <ErrorMessage>
           {errors.description?.message}
         </ErrorMessage>
-        <Button disabled={isSubmitting} onClick={showSuccessToastMessage}>  {issue ? 'Update issue' : 'Submit New Issue'}{''}{isSubmitting && <Spinner />}</Button>
+        <Button disabled={isSubmitting}>
+          {issue ? 'Update issue' : 'Submit New Issue'}{''}{isSubmitting && <Spinner />}</Button>
         <Toaster />
       </form>
     </div >
