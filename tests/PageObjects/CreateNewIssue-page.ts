@@ -46,8 +46,11 @@ export default class CreateNewIssuePage {
 
   public async assertSuccessToast(toastMess: string) {
     const toast = this.page.getByRole('status').filter({ hasText: toastMess }).nth(1)
+    const greenConfirmationIcon = this.page.locator('.go2344853693').nth(1)
     await expect(toast).toBeVisible()
     await expect(toast).toHaveText(toastMess)
+    await expect(greenConfirmationIcon).toBeVisible()
+    await expect(greenConfirmationIcon).toHaveCSS('background-color', 'rgb(97, 211, 69)')
   }
 
   public async assertFieldValidationMessage(message: string) {
