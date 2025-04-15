@@ -79,7 +79,7 @@ test('Check fields validations on Create new Issue page', async () => {
   await createNewIssuePage.assertFieldValidationMessage('Title must contain at most 255 character(s)')
   await page.waitForTimeout(500)
 
-  //Clear title field and add allowed number of character and also fill descriptino field and finally create new issue
+  //Clear title field and add allowed number of character and also fill description field and finally create new issue
   await createNewIssuePage.clearTitleField()
   await createNewIssuePage.assertAndFillTitleField("LukaTitle _ _ 1997")
   await createNewIssuePage.assertAndFillDescriptionField('New issue description')

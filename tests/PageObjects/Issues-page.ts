@@ -36,6 +36,10 @@ export default class IssuesPage {
   public async clickOnTableRow(row: number) {
     await this.tableRows.nth(row).locator('td.rt-TableCell.myClass > a').click()
   }
+  //TODO Try to merge this method with above emthod
+  public async clickOnTheLastTableRow() {
+    await this.tableRows.last().locator('td.rt-TableCell.myClass > a').click()
+  }
 
   public async clickOnPaginationButton(arrowNumber: number) {
     const arrow = this.paginationWrapper.locator('.rt-reset.rt-BaseButton').nth(arrowNumber)
@@ -113,6 +117,14 @@ export default class IssuesPage {
     const statusData = this.tableRows.last().locator('td.rt-TableCell > span').filter({ hasText: "Open" })
     await expect(titleData).toHaveText(title)
     await expect(statusData).toHaveText('Open')
+  }
+
+  public async getTableRowData(row: number): Promise<Locator[]> {
+    const issueRow = this.tableRows.nth(row)
+    const titleData = issueRow.locator('td.rt-TableCell.myClass > a')
+    const statusData = issueRow.locator('td.rt-TableCell > span')
+    const dateData = issueRow.locator('td.rt-TableCell').nth(2)
+    return [titleData, statusData, dateData]
   }
 }
 
