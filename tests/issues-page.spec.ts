@@ -26,13 +26,7 @@ test.beforeEach(async () => {
 test('Check issues table elements', async () => {
 
   //Check table columns names
-  await issuesPage.assertIssuesTableHeaderElements("Issue")
-  await page.waitForTimeout(500)
-  await issuesPage.assertIssuesTableHeaderElements("Status")
-  await page.waitForTimeout(500)
-  await issuesPage.assertIssuesTableHeaderElements("Created")
-  await page.waitForTimeout(500)
-  await issuesPage.assertIssuesTableHeaderElements("Comments")
+  await issuesPage.assertIssuesTableHeaderElements(["Issue", "Status", "Created", "Comments"])
   await page.waitForTimeout(500)
 
   //Confirm that defualt table issues count is 10

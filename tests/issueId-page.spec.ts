@@ -29,7 +29,7 @@ test.beforeEach(async () => {
 })
 
 
-test('Check issue elements on Issue id page', async () => {
+test('Check issue elements on Issue id page are visible and have correct content', async () => {
 
   //Get data of issue table row which will be clicked
   const tableData = await issuesPage.getTableRowData(1)

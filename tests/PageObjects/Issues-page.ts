@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { console } from "inspector";
 
 export default class IssuesPage {
   private page: Page
@@ -23,10 +24,12 @@ export default class IssuesPage {
     this.selectedOptionCheckMark = this.page.locator('span.rt-SelectItemIndicator')
   }
 
-  public async assertIssuesTableHeaderElements(headerName: string) {
-    const tableColumn = this.tableRoot.locator('.rt-TableHeader').filter({ hasText: headerName })
-    await expect(tableColumn).toBeVisible()
-    await expect(tableColumn).toContainText(headerName)
+  public async assertIssuesTableHeaderElements(headerName: string[]) {
+    for (let i = 0; i < headerName.length; i++) {
+      const tableColumn = this.tableRoot.locator('.rt-TableHeader').locator('.rt-TableColumnHeaderCell').nth(i)
+      await expect(tableColumn).toBeVisible()
+      await expect(tableColumn).toContainText(headerName[i])
+    }
   }
 
   public async assertDefaultTableRowsCount() {
