@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { toast } from "react-toastify";
 
 export default class CreateNewIssuePage {
 
@@ -19,22 +18,33 @@ export default class CreateNewIssuePage {
     this.fieldValidationMessage = this.wrapper.locator('p')
   }
 
-  public async assertAndFillTitleField(inputValue: string) {
-    await this.clickOnField(this.titleField)
-    if ((await this.titleField.inputValue()).length == 0)
-      await expect(this.titleField).toBeEmpty()
+  public async assertAndFillTitleField(inputValue: string, insertedTitle?: string) {
 
-    await expect(this.titleField).toBeVisible()
-    await this.titleField.type(inputValue)
+    await this.clickOnField(this.titleField)
+
+    if ((await this.titleField.inputValue()).length == 0) {
+      await expect(this.titleField).toBeEmpty()
+      await this.titleField.type(inputValue)
+    }
+    else {
+      expect((await this.titleField.inputValue()).toString()).toContain(insertedTitle)
+      await this.clearTitleField()
+      await this.titleField.type(inputValue)
+    }
   }
 
   public async assertAndFillDescriptionField(inputValue: string) {
     await this.clickOnField(this.descriptionField)
     await expect(this.descriptionField).toBeVisible()
-    if ((await this.descriptionField.innerText()).length == 0)
+
+    if ((await this.descriptionField.innerText()).length == 0) {
       await expect(this.descriptionField).toHaveClass(/empty/)
-    await this.descriptionField.click()
-    await this.descriptionField.type(inputValue)
+      await this.descriptionField.type(inputValue)
+    }
+    else {
+      await this.clearDescriptionField()
+      await this.descriptionField.type(inputValue)
+    }
   }
 
   public async assertAndClickOnSubmitButton(buttonName: string) {
@@ -71,5 +81,13 @@ export default class CreateNewIssuePage {
   public async clearTitleField() {
     await this.clickOnField(this.titleField)
     await this.titleField.clear()
+  }
+
+  public async clearDescriptionField() {
+    await this.clickOnField(this.descriptionField)
+    const characters = (await this.descriptionField.innerText()).length
+    for (let i = 0; i < characters; i++) {
+      await this.page.keyboard.press('Backspace')
+    }
   }
 }

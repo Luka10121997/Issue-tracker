@@ -114,7 +114,7 @@ test('Check Users dropdown on Issue page and confirm that after user is assigned
   await issuesPage.clickOnTheLastTableRow()
   await page.waitForTimeout(500)
 
-  //Click on Users dropdown and assignee Issue or unassign it
+  //Click on Users dropdown and assignee Issue or unassign it and confirm that Status is automatically "In Progress"
   await issueIdPage.clickOnStatusDropdown("Unassigned")
   const selectedUser = await issueIdPage.selectStatus(0)
   await issueIdPage.assertIssueStatus("In Progress")
