@@ -127,7 +127,14 @@ export default class IssuesPage {
     const titleData = issueRow.locator('td.rt-TableCell.myClass > a')
     const statusData = issueRow.locator('td.rt-TableCell > span')
     const dateData = issueRow.locator('td.rt-TableCell').nth(2)
-    return [titleData, statusData, dateData]
+    const commentData = issueRow.locator('td.rt-TableCell').nth(3)
+    return [titleData, statusData, dateData, commentData]
+  }
+
+  public async getAddedCommentOnLastCreatedIssue(): Promise<Locator> {
+    const issueRow = this.tableRows.last()
+    const commentData = issueRow.locator('td.rt-TableCell').nth(3)
+    return commentData
   }
 }
 
