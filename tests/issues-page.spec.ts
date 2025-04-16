@@ -2,7 +2,8 @@ import test, { expect, Page } from "@playwright/test";
 import PageContext from "./Context/context";
 import IssuesPage from "./PageObjects/Issues-page";
 import { prisma } from "@/prisma/client";
-import { PageSize } from "./enums";
+import { PageSize } from "./enums/enums";
+
 
 let page: Page
 let pageContext: PageContext
