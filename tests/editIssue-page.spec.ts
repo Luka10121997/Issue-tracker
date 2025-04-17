@@ -44,6 +44,7 @@ test('Go on Issue page, click on Edit issues button, and then render to Edit iss
 
   //Click on table row and go on Issue id page
   await issuesPage.clickOnTableRow(0)
+  await page.waitForTimeout(1000)
   expect(page).toHaveURL(`http://localhost:3000/issues/${id}`)
   await page.waitForTimeout(1000)
 

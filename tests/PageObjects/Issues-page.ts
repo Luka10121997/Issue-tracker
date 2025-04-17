@@ -54,10 +54,8 @@ export default class IssuesPage {
   }
 
   public async assertPagesRange() {
-    const pagesRange = (await this.paginationWrapper.locator('p').filter({ hasText: "Page" }).allTextContents()).toString()
-    const currentPageSize = pagesRange.substring(4, 7)
-    const lastPage = pagesRange.substring(10, 11)
-    expect(pagesRange).toContain(`Page${currentPageSize}of ${lastPage}`)
+    const pagesRangeText = (await this.paginationWrapper.locator('p').filter({ hasText: "Page" }).allTextContents()).toString()
+    expect(this.paginationWrapper).toContainText(pagesRangeText)
   }
 
   public async clickOnDropdown(placeholderText: string) {

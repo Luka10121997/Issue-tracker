@@ -20,7 +20,7 @@ test.beforeEach(async () => {
   issuesPage = new IssuesPage(page)
   await page.goto(pageUrl)
   expect(page).toHaveURL(/issues\/list/)
-  await page.waitForTimeout(4000)
+  await page.waitForTimeout(2000)
 })
 
 
