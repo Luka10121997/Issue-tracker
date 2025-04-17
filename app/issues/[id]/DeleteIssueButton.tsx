@@ -4,15 +4,27 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation';
 import Spinner from '@/app/components/Spinner';
+import toast, { Toaster, } from 'react-hot-toast';
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
   const router = useRouter();
   const [error, setError] = useState(false)
   const [isDeleting, setDeleting] = useState(false)
 
+  const showSuccessToastMessage = () => {
+
+    toast.success("Issue is successfully deleted", {
+      position: 'bottom-right',
+      className: 'toastify__toast-container',
+      duration: 3000
+    });
+
+  };
+
   const deleteIssue = async () => {
     try {
       setDeleting(true)
+      showSuccessToastMessage()
       axios.delete(`/api/issues/${issueId}`)
       router.push('/issues/list')
       router.refresh()
@@ -56,6 +68,7 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
           <Button mt='2' color='gray' variant='soft' onClick={async () => { setError(false) }}>OK</Button>
         </AlertDialog.Content>
       </AlertDialog.Root >
+      <Toaster />
     </>
   )
 }

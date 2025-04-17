@@ -152,6 +152,7 @@ test('Check Delete issues button on Issue page and check its functionality and C
   await issueIdPage.assertAndClickOnButton("Delete Issue")
   await page.waitForTimeout(1000)
   await issueIdPage.assertDeleteConfirmationDropdownAndClickOnButtons('Delete issue')
+  await issueIdPage.assertSuccessToast('Issue is successfully deleted')
   await page.waitForTimeout(1500)
 
   //Confirm that issue is deleted and user is rendered back on /issues/list page
