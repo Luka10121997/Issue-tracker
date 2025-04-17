@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { console } from "inspector";
 
 export default class IssuesPage {
   private page: Page
