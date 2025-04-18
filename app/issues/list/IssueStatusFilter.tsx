@@ -28,6 +28,9 @@ const IssueStatusFilter = () => {
         if (searchParams.get('user'))
           params.append('user', searchParams.get('user')!)
 
+        if (searchParams.get('size'))
+          params.append('size', searchParams.get('size')!)
+
         const query = params.size ? '?' + params.toString() : ''
         router.push('/issues/list' + query)
       }}>
