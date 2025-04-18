@@ -23,7 +23,7 @@ test.beforeEach(async () => {
   expect(page).toHaveURL(/issues\/list/)
   await page.waitForTimeout(1000)
   await issuesPage.clickOnCreateNewIssueButton('Create New Issue')
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(1000)
   expect(page).toHaveURL('http://localhost:3000/issues/new')
   await page.waitForTimeout(500)
 })

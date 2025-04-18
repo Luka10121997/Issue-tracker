@@ -18,7 +18,7 @@ export default class CreateNewIssuePage {
     this.fieldValidationMessage = this.wrapper.locator('p')
   }
 
-  public async assertAndFillTitleField(inputValue: string, insertedTitle?: string) {
+  public async assertAndFillTitleField(inputValue: string, insertedTitle?: string): Promise<void> {
 
     await this.clickOnField(this.titleField)
 
@@ -33,7 +33,7 @@ export default class CreateNewIssuePage {
     }
   }
 
-  public async assertAndFillDescriptionField(inputValue: string) {
+  public async assertAndFillDescriptionField(inputValue: string): Promise<void> {
     await this.clickOnField(this.descriptionField)
     await expect(this.descriptionField).toBeVisible()
 
@@ -47,14 +47,14 @@ export default class CreateNewIssuePage {
     }
   }
 
-  public async assertAndClickOnSubmitButton(buttonName: string) {
+  public async assertAndClickOnSubmitButton(buttonName: string): Promise<void> {
     const submitButton = this.wrapper.getByRole('button', { name: buttonName })
     await expect(submitButton).toHaveText(buttonName)
     await expect(submitButton).toBeEnabled()
     await submitButton.click()
   }
 
-  public async assertSuccessToast(toastMess: string) {
+  public async assertSuccessToast(toastMess: string): Promise<void> {
     const toast = this.page.getByRole('status').filter({ hasText: toastMess }).nth(1)
     const greenConfirmationIcon = this.page.locator('.go2344853693').nth(1)
     await expect(toast).toBeVisible()
@@ -63,27 +63,27 @@ export default class CreateNewIssuePage {
     await expect(greenConfirmationIcon).toHaveCSS('background-color', 'rgb(97, 211, 69)')
   }
 
-  public async assertFieldValidationMessage(message: string) {
+  public async assertFieldValidationMessage(message: string): Promise<void> {
     const validation = this.fieldValidationMessage.filter({ hasText: message })
     await expect(validation).toContainText(message)
     await expect(validation).toHaveCSS('color', 'rgba(196, 0, 6, 0.827)')
   }
 
-  public async assertValidationNotVisible(message: string) {
+  public async assertValidationNotVisible(message: string): Promise<void> {
     const validation = this.fieldValidationMessage.filter({ hasText: message })
     await expect(validation).not.toBeVisible()
   }
 
-  public async clickOnField(field: Locator) {
+  public async clickOnField(field: Locator): Promise<void> {
     await field.click()
   }
 
-  public async clearTitleField() {
+  public async clearTitleField(): Promise<void> {
     await this.clickOnField(this.titleField)
     await this.titleField.clear()
   }
 
-  public async clearDescriptionField() {
+  public async clearDescriptionField(): Promise<void> {
     await this.clickOnField(this.descriptionField)
     const characters = (await this.descriptionField.innerText()).length
     for (let i = 0; i < characters; i++) {

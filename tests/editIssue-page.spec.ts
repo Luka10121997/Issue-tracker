@@ -51,7 +51,6 @@ test('Go on Issue page, click on Edit issues button, and then render to Edit iss
   //Assert that Issue id page is opened and assert issue title,status,date and description
   await issueIdPage.assertIssueTitle(issueTitle)
   await issueIdPage.assertIssueDescription(description!)
-  await page.waitForTimeout(1000)
 
   //Assert and click on Edit button and assert that Edit issue page is opened
   await issueIdPage.assertAndClickOnButton("Edit issues")
@@ -66,7 +65,7 @@ test('Go on Issue page, click on Edit issues button, and then render to Edit iss
   //After fields are updated, click on Update Issue button
   await editIssuePage.assertAndClickOnSubmitButton('Update issue')
   await editIssuePage.assertSuccessToast('Issue is successfully updated')
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(2000)
 
   //Confirm that user is redirected on issues/list page
   expect(page).toHaveURL(/issues\/list/)

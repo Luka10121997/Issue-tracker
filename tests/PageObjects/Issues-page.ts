@@ -23,7 +23,7 @@ export default class IssuesPage {
     this.selectedOptionCheckMark = this.page.locator('span.rt-SelectItemIndicator')
   }
 
-  public async assertIssuesTableHeaderElements(headerName: string[]) {
+  public async assertIssuesTableHeaderElements(headerName: string[]): Promise<void> {
     for (let i = 0; i < headerName.length; i++) {
       const tableColumn = this.tableRoot.locator('.rt-TableHeader').locator('.rt-TableColumnHeaderCell').nth(i)
       await expect(tableColumn).toBeVisible()
@@ -31,43 +31,43 @@ export default class IssuesPage {
     }
   }
 
-  public async assertDefaultTableRowsCount() {
+  public async assertDefaultTableRowsCount(): Promise<void> {
     await expect(this.tableRows).toHaveCount(10)
   }
 
-  public async clickOnTableRow(row: number) {
+  public async clickOnTableRow(row: number): Promise<void> {
     await this.tableRows.nth(row).locator('td.rt-TableCell.myClass > a').click()
   }
-  //TODO Try to merge this method with above emthod
-  public async clickOnTheLastTableRow() {
+
+  public async clickOnTheLastTableRow(): Promise<void> {
     await this.tableRows.last().locator('td.rt-TableCell.myClass > a').click()
   }
 
-  public async clickOnPaginationButton(arrowNumber: number) {
+  public async clickOnPaginationButton(arrowNumber: number): Promise<void> {
     const arrow = this.paginationWrapper.locator('.rt-reset.rt-BaseButton').nth(arrowNumber)
     await arrow.click()
   }
 
-  public async assertArrowIsDisabled(arrowNumber: number) {
+  public async assertArrowIsDisabled(arrowNumber: number): Promise<void> {
     const arrow = this.paginationWrapper.locator('button').nth(arrowNumber)
     await expect(arrow).toBeDisabled()
   }
 
-  public async assertPagesRange() {
+  public async assertPagesRange(): Promise<void> {
     const pagesRangeText = (await this.paginationWrapper.locator('p').filter({ hasText: "Page" }).allTextContents()).toString()
     expect(this.paginationWrapper).toContainText(pagesRangeText)
   }
 
-  public async clickOnDropdown(placeholderText: string) {
+  public async clickOnDropdown(placeholderText: string): Promise<void> {
     await this.selectDropdownsWrapper.locator('button > span', { hasText: placeholderText }).click()
   }
 
-  public async selectDropdownOption(status: string) {
+  public async selectDropdownOption(status: string): Promise<void> {
     const option = this.page.getByRole('option').filter({ hasText: status })
     await option.click()
   }
 
-  public async assertFilteredIssuesBySelectedValue(issuesCount: number, status?: string) {
+  public async assertFilteredIssuesBySelectedValue(issuesCount: number, status?: string): Promise<void> {
     if (status != undefined) {
       for (let i = 0; i < issuesCount; i++) {
         const issuesRowsFilteredBySelectedValue = this.tableRows.nth(i).locator('td > span').filter({ hasText: status })
@@ -78,7 +78,7 @@ export default class IssuesPage {
     await expect(this.tableRows).toHaveCount(issuesCount)
   }
 
-  public async confirmDropdownSelectedValue(selectedValue: string) {
+  public async confirmDropdownSelectedValue(selectedValue: string): Promise<void> {
     const dropdownSelectedValue = this.selectDropdownsWrapper.locator('button > span', { hasText: selectedValue })
     await expect(dropdownSelectedValue).toHaveText(selectedValue)
   }
@@ -87,12 +87,12 @@ export default class IssuesPage {
     return this.paginationWrapper.locator('button > span', { hasText: placeholderText })
   }
 
-  public async clickPageSizeDropdown(placeholderText: string) {
+  public async clickPageSizeDropdown(placeholderText: string): Promise<void> {
     const dropdown = this.getPageSizeDropdowmn(placeholderText)
     await (await dropdown).click()
   }
 
-  public async selectPageSizeOption(option: string) {
+  public async selectPageSizeOption(option: string): Promise<void> {
     const suggestions = this.pageSizeContentMenuWrapper.locator('.rt-SelectLabel')
     await expect(suggestions).toHaveText("Suggestions")
     const dropdownContent = this.pageSizeContentMenuWrapper.getByRole('option', { name: option, exact: true }).filter({ hasText: option })
@@ -100,19 +100,19 @@ export default class IssuesPage {
     expect(await this.getPageSizeDropdowmn(option)).toHaveText(option)
   }
 
-  public async assertCheckMarkIsVisible() {
+  public async assertCheckMarkIsVisible(): Promise<void> {
     await expect(this.selectedOptionCheckMark).toBeVisible()
     await expect(this.selectedOptionCheckMark).toHaveCSS('border-bottom-color', 'rgb(229, 231, 235)')
   }
 
-  public async clickOnCreateNewIssueButton(buttonName: string) {
+  public async clickOnCreateNewIssueButton(buttonName: string): Promise<void> {
     const button = this.wrapper.getByRole('button').filter({ hasText: buttonName })
     await expect(button).toBeVisible()
     await expect(button).toHaveText(buttonName)
     await button.click()
   }
 
-  public async assertLastCreatedIssueOnIssuesPage(title: string) {
+  public async assertLastCreatedIssueOnIssuesPage(title: string): Promise<void> {
     const titleData = this.tableRows.last().locator('td.rt-TableCell.myClass > a').filter({ hasText: title })
     const statusData = this.tableRows.last().locator('td.rt-TableCell > span').filter({ hasText: "Open" })
     await expect(titleData).toHaveText(title)

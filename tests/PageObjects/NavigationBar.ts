@@ -28,7 +28,7 @@ export default class NavigationBar {
     await expect(this.navButton).toBeDisabled()
   }
 
-  public async clickOnBackButton() {
+  public async clickOnBackButton(): Promise<void> {
     await expect(this.navButton).toBeEnabled()
     await this.navButton.click()
   }
