@@ -102,7 +102,10 @@ test("Test status dropdown with all 3 possible status values", async () => {
 
   //Assert that rows have selected "Open" status
   await issuesPage.assertFilteredIssuesBySelectedValue(open_count, 'Open')
-  await page.waitForTimeout(3000)
+
+  //Get current url and confirm that correct status is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=OPEN`))
+  await page.waitForTimeout(1000)
 
   //Select "Closed" status
   await issuesPage.clickOnDropdown('Open')
@@ -112,7 +115,10 @@ test("Test status dropdown with all 3 possible status values", async () => {
 
   //Assert that rows have selected "Closed" status
   await issuesPage.assertFilteredIssuesBySelectedValue(closed_count, 'Closed')
-  await page.waitForTimeout(2000)
+
+  //Get current url and confirm that correct status is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=CLOSED`))
+  await page.waitForTimeout(1000)
 
   //Select "In Progress" status
   await issuesPage.clickOnDropdown('Closed')
@@ -122,13 +128,19 @@ test("Test status dropdown with all 3 possible status values", async () => {
 
   //Assert that rows have selected "Closed" status
   await issuesPage.assertFilteredIssuesBySelectedValue(inProgress_count, 'In Progress')
-  await page.waitForTimeout(2000)
+
+  //Get current url and confirm that correct status is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=IN_PROGRESS`))
+  await page.waitForTimeout(1000)
 
   //Select "All" from dropdown list
   await issuesPage.clickOnDropdown('In Progress')
   await page.waitForTimeout(500)
   await issuesPage.selectDropdownOption('All')
-  await page.waitForTimeout(500)
+
+  //Get current url and confirm that correct status is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=_all`))
+  await page.waitForTimeout(1000)
 })
 
 test("Test assignee users dropdown with user and without any assigned user", async () => {
@@ -136,6 +148,7 @@ test("Test assignee users dropdown with user and without any assigned user", asy
   //Get users from db
   const users = await prisma.user.findMany({ orderBy: { name: 'asc' } })
   const username = users[0].name
+  const userId = users[0].id
 
   const issuesCount = await prisma.issue.count({ where: { assignedToUserId: users[0].id }, take: 10 })
 
@@ -146,16 +159,22 @@ test("Test assignee users dropdown with user and without any assigned user", asy
   //Select user
   await issuesPage.selectDropdownOption(username!)
   await issuesPage.confirmDropdownSelectedValue(username!)
+
+  //Get current url and confirm that user is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?user=${userId}`))
   await page.waitForTimeout(1000)
 
   //Confirm that there is correct number of displayed filtered issues
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCount)
-  await page.waitForTimeout(1000)
+
 
   //Select unassigned value
   await issuesPage.clickOnDropdown(username!)
   await issuesPage.selectDropdownOption("Unassigned")
   await issuesPage.confirmDropdownSelectedValue("Unassigned")
+
+  //Get current url and confirm that user "unassigned" is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?user=unassigned`))
   await page.waitForTimeout(1000)
 })
 
@@ -164,6 +183,7 @@ test("Test combination of assigned user and assigned issue status", async () => 
   //Get users from db
   const users = await prisma.user.findMany({ orderBy: { name: 'asc' } })
   const username = users[0].name
+  const userId = users[0].id
 
   //Get issuesCount for different cases
   const issuesCountClosedWithUser = await prisma.issue.count({ where: { assignedToUserId: users[0].id, status: 'CLOSED' }, take: 10 })
@@ -183,13 +203,20 @@ test("Test combination of assigned user and assigned issue status", async () => 
   await issuesPage.confirmDropdownSelectedValue(username!)
   await page.waitForTimeout(500)
 
+  //Get current url and confirm that user is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?user=${userId}`))
+  await page.waitForTimeout(1000)
+
   //Click on Status dropdown and select "Closed" status
   await issuesPage.clickOnDropdown('Filter by status...')
   await issuesPage.selectDropdownOption('Closed')
   await issuesPage.confirmDropdownSelectedValue('Closed')
   await issuesPage.confirmDropdownSelectedValue(username!)
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountClosedWithUser, 'Closed')
-  await page.waitForTimeout(500)
+
+  //Get current url and confirm that correct status and user are placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=CLOSED&user=${userId}`))
+  await page.waitForTimeout(1000)
 
   //Click on Status dropdown and select "In Progress" status
   await issuesPage.clickOnDropdown('Closed')
@@ -198,7 +225,10 @@ test("Test combination of assigned user and assigned issue status", async () => 
   await issuesPage.confirmDropdownSelectedValue('In Progress')
   await issuesPage.confirmDropdownSelectedValue(username!)
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountInProgressWithUser, 'In Progress')
-  await page.waitForTimeout(500)
+
+  //Get current url and confirm that correct status and user are placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=IN_PROGRESS&user=${userId}`))
+  await page.waitForTimeout(1000)
 
   //Click on Users dropdown and select "Unassigned"
   await issuesPage.clickOnDropdown(username!)
@@ -207,7 +237,10 @@ test("Test combination of assigned user and assigned issue status", async () => 
   await issuesPage.confirmDropdownSelectedValue('Unassigned')
   await issuesPage.confirmDropdownSelectedValue('In Progress')
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountInProgressWithoutUser, 'In Progress')
-  await page.waitForTimeout(500)
+
+  //Get current url and confirm that "unassigned" user value and correct status are placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?user=unassigned&status=IN_PROGRESS`))
+  await page.waitForTimeout(1000)
 
   //Click on Status dropdown and select "Closed"
   await issuesPage.clickOnDropdown("In Progress")
@@ -216,7 +249,10 @@ test("Test combination of assigned user and assigned issue status", async () => 
   await issuesPage.confirmDropdownSelectedValue("Closed")
   await issuesPage.confirmDropdownSelectedValue('Unassigned')
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountClosedWithoutUser, "Closed")
-  await page.waitForTimeout(500)
+
+  //Get current url and confirm that correct status and "unassigned" user value are placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=CLOSED&user=unassigned`))
+  await page.waitForTimeout(1000)
 
   //Click on Status dropdown and select "All" statuses
   await issuesPage.clickOnDropdown("Closed")
@@ -225,7 +261,10 @@ test("Test combination of assigned user and assigned issue status", async () => 
   await issuesPage.confirmDropdownSelectedValue("All")
   await issuesPage.confirmDropdownSelectedValue('Unassigned')
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountAllWithoutUser)
-  await page.waitForTimeout(500)
+
+  //Get current url and confirm that correct status and "unassigned" user value are placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?status=_all&user=unassigned`))
+  await page.waitForTimeout(1000)
 
   //Click on User dropdown and select user
   await issuesPage.clickOnDropdown("Unassigned")
@@ -234,7 +273,10 @@ test("Test combination of assigned user and assigned issue status", async () => 
   await issuesPage.confirmDropdownSelectedValue(username!)
   await issuesPage.confirmDropdownSelectedValue('All')
   await issuesPage.assertFilteredIssuesBySelectedValue(issuesCountAllWithUser)
-  await page.waitForTimeout(500)
+
+  //Get current url and confirm that user and "_all" status are placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?user=${userId}&status=_all`))
+  await page.waitForTimeout(1000)
 })
 
 test("Test 'Select page size' dropdown", async () => {
@@ -247,8 +289,11 @@ test("Test 'Select page size' dropdown", async () => {
 
   //Assert page range after it's selected page size = 5 and assert that 5 issues are displayed
   await issuesPage.assertPagesRange()
-  await issuesPage.assertFilteredIssuesBySelectedValue(5)
-  await page.waitForTimeout(500)
+  const pageSize = await issuesPage.assertFilteredIssuesBySelectedValue(5)
+
+  //Get current url and confirm that correct page size is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?size=${pageSize}`))
+  await page.waitForTimeout(1000)
 
   //Select page size '10'
   await issuesPage.clickPageSizeDropdown(PageSize.five)
@@ -259,8 +304,11 @@ test("Test 'Select page size' dropdown", async () => {
 
   //Assert page range after it's selected page size = 10 and assert that 10 issues are displayed
   await issuesPage.assertPagesRange()
-  await issuesPage.assertFilteredIssuesBySelectedValue(10)
-  await page.waitForTimeout(500)
+  const pageSize2 = await issuesPage.assertFilteredIssuesBySelectedValue(10)
+
+  //Get current url and confirm that correct page size is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?size=${pageSize2}`))
+  await page.waitForTimeout(1000)
 
   //Select page size '1'
   await issuesPage.clickPageSizeDropdown(PageSize.ten)
@@ -271,6 +319,83 @@ test("Test 'Select page size' dropdown", async () => {
 
   //Assert page range after it's selected page size = 1 and assert that 1 issue is displayed
   await issuesPage.assertPagesRange()
-  await issuesPage.assertFilteredIssuesBySelectedValue(1)
+  const pageSize3 = await issuesPage.assertFilteredIssuesBySelectedValue(1)
+
+  //Get current url and confirm that correct page size is placed in url
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?size=${pageSize3}`))
   await page.waitForTimeout(500)
+})
+
+test("Test Sorting with Issues table columns", async () => {
+
+  //Click on table header and sort by issue title in ascending order
+  await issuesPage.clickOnIssuesTableHeader("Issue")
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.assertRowsAreSortedByColumn(10, 'asc', 0)
+
+  //Get current url and confirm that it's visible that issues are sorted by title in ascending order
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?orderBy=title&sort=asc`))
+  await page.waitForTimeout(1000)
+
+  //Click again on Issues table header and sort by issue title in descending order
+  await issuesPage.clickOnIssuesTableHeader("Issue")
+  await page.waitForTimeout(1000)
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.assertRowsAreSortedByColumn(10, 'desc', 0)
+
+  //Get current url and confirm that it's visible that issues are sorted by title in descending order
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?orderBy=title&sort=desc`))
+  await page.waitForTimeout(1000)
+
+  //Click on table header and sort by issue Status in ascending order
+  await issuesPage.clickOnIssuesTableHeader("Status")
+  await page.waitForTimeout(1000)
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.assertRowsAreSortedByColumn(10, 'asc', 1)
+
+  //Get current url and confirm that it's visible that issues are sorted by Status in ascending order
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?orderBy=status&sort=asc`))
+  await page.waitForTimeout(1000)
+
+  //Click on table header and sort by issue Status in descending order
+  await issuesPage.clickOnIssuesTableHeader("Status")
+  await page.waitForTimeout(1000)
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.assertRowsAreSortedByColumn(10, 'desc', 1)
+
+  //Get current url and confirm that it's visible that issues are sorted by Status in descending order
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?orderBy=status&sort=desc`))
+  await page.waitForTimeout(1000)
+
+  //Click on table header and sort by issue "Created" in ascending order
+  await issuesPage.clickOnIssuesTableHeader("Created")
+  await page.waitForTimeout(2000)
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.assertRowsAreSortedByColumn(10, 'asc', 2)
+
+  //Get current url and confirm that it's visible that issues are sorted by Status in ascending order
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?orderBy=createdAt&sort=asc`))
+  await page.waitForTimeout(1000)
+
+  //Click on table header and sort by issue "Comments" in descending order
+  await issuesPage.clickOnIssuesTableHeader("Comments")
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.clickOnIssuesTableHeader("Comments")
+  await page.waitForTimeout(1000)
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.assertRowsAreSortedByColumn(10, 'desc', 3)
+
+  //Get current url and confirm that it's visible that issues are sorted by Comments in descending order
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?orderBy=comment&sort=desc`))
+  await page.waitForTimeout(1000)
+
+  //Click on table header and sort by issue "Comments" in ascending order
+  await issuesPage.clickOnIssuesTableHeader("Comments")
+  await page.waitForTimeout(1000)
+  await issuesPage.assertSortArrowIsVisible()
+  await issuesPage.assertRowsAreSortedByColumn(10, 'asc', 3)
+
+  //Get current url and confirm that it's visible that issues are sorted by Comments in ascending order
+  await expect(page).toHaveURL(new RegExp(`issues/list\\?orderBy=comment&sort=asc`))
+  await page.waitForTimeout(1000)
 })

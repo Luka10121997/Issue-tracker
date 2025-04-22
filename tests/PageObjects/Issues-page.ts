@@ -31,6 +31,45 @@ export default class IssuesPage {
     }
   }
 
+  public async clickOnIssuesTableHeader(headerName: string): Promise<void> {
+    const tableColumn = this.tableRoot.locator('.rt-TableHeader').locator('.rt-TableColumnHeaderCell > a').filter({ hasText: headerName })
+    await expect(tableColumn).toBeVisible()
+    await tableColumn.click()
+  }
+
+  public async assertSortArrowIsVisible(): Promise<void> {
+    const arrow = this.tableRoot.locator('.rt-TableHeader').locator('.rt-TableColumnHeaderCell > svg.inline')
+    await expect(arrow).toBeVisible()
+    await expect(arrow).toHaveCSS('color', 'rgb(32, 32, 32)')
+  }
+
+  public async assertRowsAreSortedByColumn(rows: number, sort: string, columnNumber: number): Promise<void> {
+
+    const defaultArr: string[] = []
+    const sortedArr: string[] = []
+
+    for (let i = 0; i < rows; i++) {
+      const items = await this.tableRows.nth(i).locator('td').nth(columnNumber).innerText()
+      defaultArr.push(items)
+      sortedArr.push(items)
+    }
+    if (sort == "asc") {
+      sortedArr.sort((a, b) => b.localeCompare(a))
+      sortedArr.reverse()
+    }
+
+    else if (sort == "desc") {
+      sortedArr.sort((a, b) => a.localeCompare(b))
+      sortedArr.reverse()
+    }
+
+    if (columnNumber == 2)
+      sortedArr.sort((a, b) => Date.parse(a) - Date.parse(b))
+
+    expect(defaultArr).toStrictEqual(sortedArr)
+
+  }
+
   public async assertDefaultTableRowsCount(): Promise<void> {
     await expect(this.tableRows).toHaveCount(10)
   }
@@ -67,7 +106,7 @@ export default class IssuesPage {
     await option.click()
   }
 
-  public async assertFilteredIssuesBySelectedValue(issuesCount: number, status?: string): Promise<void> {
+  public async assertFilteredIssuesBySelectedValue(issuesCount: number, status?: string): Promise<number> {
     if (status != undefined) {
       for (let i = 0; i < issuesCount; i++) {
         const issuesRowsFilteredBySelectedValue = this.tableRows.nth(i).locator('td > span').filter({ hasText: status })
@@ -76,6 +115,7 @@ export default class IssuesPage {
       }
     }
     await expect(this.tableRows).toHaveCount(issuesCount)
+    return issuesCount
   }
 
   public async confirmDropdownSelectedValue(selectedValue: string): Promise<void> {

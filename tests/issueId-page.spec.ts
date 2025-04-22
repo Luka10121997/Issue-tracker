@@ -5,7 +5,6 @@ import IssueIdPage from "./PageObjects/IssueId-page";
 import { prisma } from "@/prisma/client";
 import NavigationBar from "./PageObjects/NavigationBar";
 
-//TODO Add on beforeEach function for issues creation
 let page: Page
 let pageContext: PageContext
 const pageUrl = "http://localhost:3000/issues/list"
