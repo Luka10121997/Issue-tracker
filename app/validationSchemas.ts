@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 export const isssueSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(255),
-  description: z.string().min(1, 'Description is required').max(65535)
+  title: z.string().min(1, 'Title is required').max(255, 'Title must contain at most 255 character(s)'),
+  description: z.string().min(1, 'Description is required').max(65535, 'Description must contain at most 65535 character(s)')
 });
 
 export const patchIsssueSchema = z.object({

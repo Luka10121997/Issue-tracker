@@ -27,6 +27,9 @@ const IssueAssigneeFilter = () => {
         if (searchParams.get('status'))
           params.append('status', searchParams.get('status')!)
 
+        if (searchParams.get('size'))
+          params.append('size', searchParams.get('size')!)
+
         const query = params.size ? '?' + params.toString() : ''
         router.push('/issues/list' + query)
       }}>
