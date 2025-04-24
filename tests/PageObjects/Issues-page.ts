@@ -42,7 +42,12 @@ export default class IssuesPage {
     await expect(arrow).toBeVisible()
     await expect(arrow).toHaveCSS('color', 'rgb(32, 32, 32)')
   }
-
+  /**
+   * Method for asserting that the rows are sorted by the selected column
+   * @param rows - number of rows to be sorted
+   * @param sort - sorting order (asc/desc)
+   * @param columnNumber
+   */
   public async assertRowsAreSortedByColumn(rows: number, sort: string, columnNumber: number): Promise<void> {
 
     const defaultArr: string[] = []
@@ -53,6 +58,7 @@ export default class IssuesPage {
       defaultArr.push(items)
       sortedArr.push(items)
     }
+
     if (sort == "asc") {
       sortedArr.sort((a, b) => b.localeCompare(a))
       sortedArr.reverse()
@@ -74,12 +80,15 @@ export default class IssuesPage {
     await expect(this.tableRows).toHaveCount(10)
   }
 
-  public async clickOnTableRow(row: number): Promise<void> {
-    await this.tableRows.nth(row).locator('td.rt-TableCell.myClass > a').click()
-  }
-
-  public async clickOnTheLastTableRow(): Promise<void> {
-    await this.tableRows.last().locator('td.rt-TableCell.myClass > a').click()
+  /**
+   * Method for clicking on the table row
+   * @param row - number of the row to be clicked, if not provided the last row will be clicked
+   */
+  public async clickOnTableRow(row?: number): Promise<void> {
+    if (row != undefined)
+      await this.tableRows.nth(row).locator('td.rt-TableCell.myClass > a').click()
+    else
+      await this.tableRows.last().locator('td.rt-TableCell.myClass > a').click()
   }
 
   public async clickOnPaginationButton(arrowNumber: number): Promise<void> {
@@ -106,6 +115,12 @@ export default class IssuesPage {
     await option.click()
   }
 
+  /**
+   * 
+   * @param issuesCount - number of issues to be filtered
+   * @param status - status to be filtered by, if not provided all issues on table page will be filtered
+   * @returns - number of issues filtered by selected value
+   */
   public async assertFilteredIssuesBySelectedValue(issuesCount: number, status?: string): Promise<number> {
     if (status != undefined) {
       for (let i = 0; i < issuesCount; i++) {

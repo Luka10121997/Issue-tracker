@@ -54,6 +54,7 @@ test('Go on Issue page, click on Edit issues button, and then render to Edit iss
 
   //Assert and click on Edit button and assert that Edit issue page is opened
   await issueIdPage.assertAndClickOnButton("Edit issues")
+  await page.waitForTimeout(1000)
   expect(page).toHaveURL(`http://localhost:3000/issues/Edit/${id}`)
   await page.waitForTimeout(1000)
 

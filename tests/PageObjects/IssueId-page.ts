@@ -61,7 +61,10 @@ export default class IssueIdPage {
     await uncheckedOption.click()
     return statusDropdown.innerText()
   }
-
+  /**
+   * Method to assert the delete confirmation dropdown and click on the specified button of the dropdown
+   * @param buttonName - name of the button to be clicked in the delete confirmation dropdown
+   */
   public async assertDeleteConfirmationDropdownAndClickOnButtons(buttonName: string): Promise<void> {
     await expect(this.deleteDropdown).toBeVisible()
     const dropdownTitle = (await this.deleteDropdown.getByRole('heading', { name: 'Confirm Deletion' }).innerText())

@@ -109,8 +109,8 @@ test('Check Users dropdown on Issue page and confirm that after user is assigned
   await page.waitForTimeout(1000)
 
 
-  //Click on table row and go on Issue id page
-  await issuesPage.clickOnTheLastTableRow()
+  //Click on the last table row and go on Issue id page
+  await issuesPage.clickOnTableRow()
   await page.waitForTimeout(500)
 
   //Click on Users dropdown and assignee Issue or unassign it and confirm that Status is automatically "In Progress"
@@ -135,8 +135,8 @@ test('Check Delete issues button on Issue page and check its functionality and C
   await issuesPage.clickOnPaginationButton(3)
   await page.waitForTimeout(1000)
 
-  //Click on table row and go on Issue id page
-  await issuesPage.clickOnTheLastTableRow()
+  //Click on the last table row and go on Issue id page
+  await issuesPage.clickOnTableRow()
   await page.waitForTimeout(1500)
 
   //Click on Delete button and assert that Delete confirmation dropdown is opened
@@ -160,12 +160,13 @@ test('Check Delete issues button on Issue page and check its functionality and C
 })
 
 test('Check Add comment functionality on Issue id page and check Comment box validation messages', async () => {
+
   //Go on last Issues page and click on single right arrow button
   await issuesPage.clickOnPaginationButton(3)
   await page.waitForTimeout(1000)
 
-  //Click on table row and go on Issue id page
-  await issuesPage.clickOnTheLastTableRow()
+  //Click on the last table row and go on Issue id page
+  await issuesPage.clickOnTableRow()
   await page.waitForTimeout(1500)
 
   //Add one valid comment
@@ -184,7 +185,7 @@ test('Check Add comment functionality on Issue id page and check Comment box val
   await page.waitForTimeout(500)
 
   //Go again on the last created issue and then assert comment validation messages
-  await issuesPage.clickOnTheLastTableRow()
+  await issuesPage.clickOnTableRow()
   await page.waitForTimeout(1500)
 
   //Click on Add comment button without populating Comment box and assert validation message

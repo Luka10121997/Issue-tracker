@@ -5,7 +5,6 @@ export default class DashboardPage {
   private latestIssueHeader: Locator
   private issuesCard: Locator
   private tableRoot: Locator
-
   private tableRows: Locator
 
   constructor(_page: Page) {
